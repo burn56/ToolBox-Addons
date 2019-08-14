@@ -1,4 +1,20 @@
-﻿[CmdletBinding()]param (    [string]$Company    )
+    <#
+    .SYNOPSIS
+    Calculate Subnet Masks based on a GUI
+
+    .DESCRIPTION
+      Borrowed and retooled from multiple sources
+
+    .EXAMPLE
+    Customize with company name by running script with -company "Company Name"
+
+    .OUTPUTS
+     A GUI with a Subnet Calulator
+    #>
+[CmdletBinding()]
+param (
+    [string]$Company
+    )
 #region functions
 
 # Add WPF and Windows Forms assemblies
@@ -10,34 +26,7 @@ catch {
 }
 
 Function New-WPFDialog() {
-    <#
-    .SYNOPSIS
-    This neat little function is based on the one from Brian Posey's Article on Powershell GUIs
 
-    .DESCRIPTION
-      I re-factored a bit to return the resulting XaML Reader and controls as a single, named collection.
-
-    .PARAMETER XamlData
-     XamlData - A string containing valid XaML data
-
-    .EXAMPLE
-
-      $MyForm = New-WPFDialog -XamlData $XaMLData
-      $MyForm.Exit.Add_Click({...})
-      $null = $MyForm.UI.Dispatcher.InvokeAsync{$MyForm.UI.ShowDialog()}.Wait()
-
-    .NOTES
-    Place additional notes here.
-
-    .LINK
-      http://www.windowsnetworking.com/articles-tutorials/netgeneral/building-powershell-gui-part2.html
-
-    .INPUTS
-     XamlData - A string containing valid XaML data
-
-    .OUTPUTS
-     a collection of WPF GUI objects.
-    #>
 
     Param([Parameter(Mandatory = $True, HelpMessage = 'XaML Data defining a GUI', Position = 1)]
         [string]$XamlData)
