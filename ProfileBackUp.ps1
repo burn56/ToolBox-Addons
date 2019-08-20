@@ -109,19 +109,6 @@ function Show-ProfileBackup {
 
 	#End Region - Automatic System Information Gathering
 	
-	# Setting up Speech
-	# Need to load the System.Speech assembly
-	Add-Type -AssemblyName System.speech
-	
-	# Now we create the SpeechSynthesizer object.
-	$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
-	
-	# Setting voice
-	$speak.SelectVoice('Microsoft Zira Desktop')
-	
-	
-	
-	
 	function Get-Inventory
 	{
 		$InventoryScript = cmd /c "net use"
@@ -163,7 +150,6 @@ function Show-ProfileBackup {
 				Robocopy $source\Desktop $dest\Desktop *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				#$richtextbox1.Text = Robocopy $source\Desktop $dest\Desktop *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt | Out-String
 				$richtextbox1.Text += "`nDesktop directory backed up successfully."
-				$speak.Speak("The Desktop directory completed backing up. 30 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "30"
 			}
@@ -171,7 +157,6 @@ function Show-ProfileBackup {
 			{
 				Robocopy $source\Documents $dest\Documents *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nDocuments directory backed up successfully."
-				$speak.Speak("The Documents directory completed backing up. 45 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "45"
 			}
@@ -179,7 +164,6 @@ function Show-ProfileBackup {
 			{
 				Robocopy $source\Downloads $dest\Downloads *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nDownloads directory backed up successfully."
-				$speak.Speak("The Downloads directory completed backing up. 57 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "57"
 			}
@@ -192,7 +176,6 @@ function Show-ProfileBackup {
 				$ProgressBar1.Value = "63"
 				Robocopy $source\AppData\Roaming\Mozilla\Firefox\Profiles $dest\AppData\Roaming\Mozilla\Firefox\Profiles *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nIE, FireFox, and Chrome Bookmark directories backed up successfully."
-				$speak.Speak("The Eye E, Fire Fox and Chrome Bookmarks directories completed backing up. 65 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "65"
 			}
@@ -200,7 +183,6 @@ function Show-ProfileBackup {
 			{
 				Robocopy $source\Pictures $dest\Pictures *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nPictures directory backed up successfully."
-				$speak.Speak("The Pictures directory completed backing up. 75 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "75"
 			}
@@ -208,7 +190,6 @@ function Show-ProfileBackup {
 			{
 				Robocopy $source\Videos $dest\Videos *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nVideos directory backed up successfully."
-				$speak.Speak("The Videos directory completed backing up. 80 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "80"
 			}
@@ -216,7 +197,6 @@ function Show-ProfileBackup {
 			{
 				Robocopy "$source\application data\microsoft\templates" "$dest\application data\microsoft\templates" *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nQuickParts directory backed up successfully."
-				$speak.Speak("The Microsoft QuickParts completed backing up. 90 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "90"
 			}
@@ -225,7 +205,6 @@ function Show-ProfileBackup {
 				$source = $textbox7.Text
 				Robocopy $source $dest\Custom_Directory_Backup *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nCustom directory backed up successfully."
-				$speak.Speak("The custom backup directory completed backing up. 93 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "93"
 			}
@@ -234,26 +213,21 @@ function Show-ProfileBackup {
 				Robocopy $source\ODBA $dest\ODBA *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				Robocopy $source\OneDrive - Embry-Riddle Aeronautical University $dest\OneDrive - Embry-Riddle Aeronautical University.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`OneDrive, and OneDrive-Not-Yet-Syncd-Files directory backed up successfully."
-				$speak.Speak("The OneDrive, and OneDrive-Not-Yet-Syncd-Files directories completed backing up. 96 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "96"
 				
 			}
 			Robocopy $source\AppData\Roaming\Adobe\Acrobat\DC\Security $dest\AppData\Roaming\Adobe\Acrobat\DC\Security *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 			$richtextbox1.Text += "`nAdobe signature file backed up successfully."
-			$speak.Speak("The Adobe signature file completed backing up.")
 			Robocopy $source\application data\microsoft\signatures $dest\application data\microsoft\signatures *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 			$richtextbox1.Text += "`nOutlook signature backed up successfully."
-			$speak.Speak("The Outlook signaturecompleted backing up. 98 percent complete")
 			$ProgressBar1.Value = "98"
 			$ProgressBar1.Value = "100"
-			$speak.Speak("All selected directories completed backing up. Please continue with your day in whatever manner that might mean.")
 			$result = [System.Windows.Forms.MessageBox]::Show('This Operation Completed Successfully!', 'Warning', 'OK', 'Warning')
 			$result
 			}
 		Else
 		{
-			$speak.Speak("No joy. I was unable to locate the directory you specified. Please check your path and try again.")
 			$result = [System.Windows.Forms.MessageBox]::Show('Unable to reach souce location!', 'Warning', 'YesNo', 'Warning')
 			$result
 		}
