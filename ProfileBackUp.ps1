@@ -69,6 +69,7 @@ function Show-ProfileBackup {
 	$richtextbox1 = New-Object 'System.Windows.Forms.RichTextBox'
 	$tooltip1 = New-Object 'System.Windows.Forms.ToolTip'
 	$InitialFormWindowState = New-Object 'System.Windows.Forms.FormWindowState'
+	$Icon = New-Object system.drawing.icon ("C:\temp\deployment\core.ico")
 	#endregion Generated Form Objects
 
 	#----------------------------------------------
@@ -321,6 +322,7 @@ function Show-ProfileBackup {
 	$formProfileBackup.AutoScaleDimensions = '6, 13'
 	$formProfileBackup.AutoScaleMode = 'Font'
 	$formProfileBackup.ClientSize = '408, 461'
+	$formProfileBackup.Icon = $Icon
 	#region Binary Data
 	
 	#endregion
