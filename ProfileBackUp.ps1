@@ -7,6 +7,9 @@
 	 Contact: 		   	      alan.newingham@gmail.com
 	 Git:					  https://github.com/01000001-01001110/Share
 	--------------------------------------------------------------------------------
+	
+	
+    Updated by Murbano
 #>
 
 
@@ -133,6 +136,7 @@ function Show-ProfileBackup {
 	{
 		$source = $TextBox1.Text
 		$dest = $TextBox2.Text
+       
 		If (Test-Path $source)
 		{
 			If ($checkboxNewComputer.Checked)
@@ -146,9 +150,9 @@ function Show-ProfileBackup {
 			If ($checkboxDesktop.Checked)
 			{
 				$ProgressBar1.Value = "15"
-				#Copy-Item "$source\Desktop" -Destination "$dest\Desktop" -Recurse -Force
+				Copy-Item "$source\Desktop" -Destination "$dest\Desktop" -Recurse -Force
 				#robocopy c:\users\newingha\Desktop e:\backup\why *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
-				Robocopy $source\Desktop $dest\Desktop *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+				#Robocopy $source\Desktop $dest\Desktop *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				#$richtextbox1.Text = Robocopy $source\Desktop $dest\Desktop *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt | Out-String
 				$richtextbox1.Text += "`nDesktop directory backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
@@ -156,14 +160,16 @@ function Show-ProfileBackup {
 			}
 			If ($checkboxDocuments.Checked)
 			{
-				Robocopy $source\Documents $dest\Documents *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+                Copy-Item "$source\Documents $dest\Documents" -Recurse -Force
+				#Robocopy $source\Documents $dest\Documents *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nDocuments directory backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "45"
 			}
 			If ($checkboxDownloads.Checked)
 			{
-				Robocopy $source\Downloads $dest\Downloads *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+                Copy-Item "$source\Downloads $dest\Downloads" -Recurse -Force
+				#Robocopy $source\Downloads $dest\Downloads *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nDownloads directory backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "57"
@@ -171,24 +177,27 @@ function Show-ProfileBackup {
 			If ($checkboxBrowsers.Checked)
 			{
 				$richtextbox1.Text += "Initializing Browser data backup, please close the customer's browsers now."
-				Robocopy $source\Favorites $dest\Favorites *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+                Copy-Item "$source\Favorites $dest\Favorites" -Recurse -Force
+				#Robocopy $source\Favorites $dest\Favorites *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$ProgressBar1.Value = "60"
-				Robocopy $source\AppData\Local\Google $dest\AppData\Local\Google *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+				Copy-Item "$source\AppData\Local\Google $dest\AppData\Local\Google" -Recurse -Force
 				$ProgressBar1.Value = "63"
-				Robocopy $source\AppData\Roaming\Mozilla\Firefox\Profiles $dest\AppData\Roaming\Mozilla\Firefox\Profiles *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+				Copy-Item "$source\AppData\Roaming\Mozilla\Firefox\Profiles $dest\AppData\Roaming\Mozilla\Firefox\Profiles" -Recurse -Force
 				$richtextbox1.Text += "`nIE, FireFox, and Chrome Bookmark directories backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "65"
 			}
 			If ($checkboxPictures.Checked)
 			{
-				Robocopy $source\Pictures $dest\Pictures *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+                Copy-Item "$source\Pictures $dest\Pictures" -Recurse -Force
+				#Robocopy $source\Pictures $dest\Pictures *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nPictures directory backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "75"
 			}
 			If ($checkboxVideos.Checked)
 			{
+                Copy-Item "$source\Videos $dest\Videos" -Recurse -Force
 				Robocopy $source\Videos $dest\Videos *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nVideos directory backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
@@ -196,7 +205,8 @@ function Show-ProfileBackup {
 			}
 			If ($checkboxQuickparts.Checked)
 			{
-				Robocopy "$source\application data\microsoft\templates" "$dest\application data\microsoft\templates" *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+                Copy-Item "$source\application data\microsoft\templates $dest\application data\microsoft\templates" -Recurse -Force
+				#Robocopy "$source\application data\microsoft\templates" "$dest\application data\microsoft\templates" *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nQuickParts directory backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "90"
@@ -204,23 +214,27 @@ function Show-ProfileBackup {
 			If ($checkboxCustomDirectory.Checked)
 			{
 				$source = $textbox7.Text
-				Robocopy $source $dest\Custom_Directory_Backup *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+                Copy-Item $source $dest -Recurse -Force
+				#Robocopy $source $dest\Custom_Directory_Backup *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nCustom directory backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "93"
 			}
 			If ($checkboxOneDrive.Checked)
 			{
-				Robocopy $source\ODBA $dest\ODBA *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
-				Robocopy $source\OneDrive - Embry-Riddle Aeronautical University $dest\OneDrive - Embry-Riddle Aeronautical University.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+                Copy-Item "$source\ODBA $dest\ODBA" -Recurse -Force
+                Copy-Item "$source\OneDrive $dest\OneDrive" -Recurse -Force
+				#Robocopy $source\ODBA $dest\ODBA *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+				#Robocopy $source\OneDrive - Embry-Riddle Aeronautical University $dest\OneDrive - Embry-Riddle Aeronautical University.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`OneDrive, and OneDrive-Not-Yet-Syncd-Files directory backed up successfully."
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "96"
 				
 			}
-			Robocopy $source\AppData\Roaming\Adobe\Acrobat\DC\Security $dest\AppData\Roaming\Adobe\Acrobat\DC\Security *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
-			$richtextbox1.Text += "`nAdobe signature file backed up successfully."
-			Robocopy $source\application data\microsoft\signatures $dest\application data\microsoft\signatures *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+			#Robocopy $source\AppData\Roaming\Adobe\Acrobat\DC\Security $dest\AppData\Roaming\Adobe\Acrobat\DC\Security *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+			#$richtextbox1.Text += "`nAdobe signature file backed up successfully."
+            Copy-Item "$source\application data\microsoft\signatures $dest\application data\microsoft\signatures" -Recurse -Force
+			#Robocopy $source\application data\microsoft\signatures $dest\application data\microsoft\signatures *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 			$richtextbox1.Text += "`nOutlook signature backed up successfully."
 			$ProgressBar1.Value = "98"
 			$ProgressBar1.Value = "100"
