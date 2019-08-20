@@ -1,4 +1,3 @@
-
 <#
     .NOTES
     --------------------------------------------------------------------------------
@@ -9,17 +8,24 @@
 	 Git:					  https://github.com/01000001-01001110/Share
 	--------------------------------------------------------------------------------
 #>
+
+
+#----------------------------------------------
+#region Application Functions
+#----------------------------------------------
+
+#endregion Application Functions
+
 #----------------------------------------------
 # Generated Form Function
 #----------------------------------------------
-function Show-profileBackup {
+function Show-ProfileBackup {
 
 	#----------------------------------------------
 	#region Import the Assemblies
 	#----------------------------------------------
-	[void][reflection.assembly]::Load('System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a')
 	[void][reflection.assembly]::Load('System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')
-	[void][reflection.assembly]::Load('System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a')
+	[void][reflection.assembly]::Load('System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a')
 	#endregion Import Assemblies
 
 	#----------------------------------------------
@@ -27,17 +33,25 @@ function Show-profileBackup {
 	#----------------------------------------------
 	[System.Windows.Forms.Application]::EnableVisualStyles()
 	$formProfileBackup = New-Object 'System.Windows.Forms.Form'
-	$label1 = New-Object 'System.Windows.Forms.Label'
-	$labelProfileBackup002 = New-Object 'System.Windows.Forms.Label'
-	$labelInstDate = New-Object 'System.Windows.Forms.Label'
+	$checkboxNewComputer = New-Object 'System.Windows.Forms.CheckBox'
+	$labelCheckDirectoryYouWan = New-Object 'System.Windows.Forms.Label'
+	$Info = New-Object 'System.Windows.Forms.GroupBox'
 	$labelenvUserName = New-Object 'System.Windows.Forms.Label'
+	$labelOSInstallDate = New-Object 'System.Windows.Forms.Label'
 	$labelenvCOMPUTERNAME = New-Object 'System.Windows.Forms.Label'
+	$labelAuthenticatedUser = New-Object 'System.Windows.Forms.Label'
+	$labelInstDate = New-Object 'System.Windows.Forms.Label'
+	$labelWindowsUser = New-Object 'System.Windows.Forms.Label'
+	$label1 = New-Object 'System.Windows.Forms.Label'
+	$labelDeviceName = New-Object 'System.Windows.Forms.Label'
+	$labelProfileBackup005 = New-Object 'System.Windows.Forms.Label'
 	$buttonPrograms = New-Object 'System.Windows.Forms.Button'
 	$buttonInventory = New-Object 'System.Windows.Forms.Button'
 	$buttonPrinters = New-Object 'System.Windows.Forms.Button'
 	$buttonBackup = New-Object 'System.Windows.Forms.Button'
 	$progressbar1 = New-Object 'System.Windows.Forms.ProgressBar'
 	$groupbox3 = New-Object 'System.Windows.Forms.GroupBox'
+	$checkboxOneDrive = New-Object 'System.Windows.Forms.CheckBox'
 	$checkboxCustomDirectory = New-Object 'System.Windows.Forms.CheckBox'
 	$textbox7 = New-Object 'System.Windows.Forms.TextBox'
 	$checkboxQuickparts = New-Object 'System.Windows.Forms.CheckBox'
@@ -53,7 +67,7 @@ function Show-profileBackup {
 	$labelFromLocation = New-Object 'System.Windows.Forms.Label'
 	$labelToLocation = New-Object 'System.Windows.Forms.Label'
 	$richtextbox1 = New-Object 'System.Windows.Forms.RichTextBox'
-	#$tooltip1 = New-Object 'System.Windows.Forms.ToolTip'
+	$tooltip1 = New-Object 'System.Windows.Forms.ToolTip'
 	$InitialFormWindowState = New-Object 'System.Windows.Forms.FormWindowState'
 	#endregion Generated Form Objects
 
@@ -66,73 +80,35 @@ function Show-profileBackup {
 		
 	}
 	
+	#region Control Helper Functions
+	<#
+		.SYNOPSIS
+			Sets the emulation of the WebBrowser control for the application.
+		
+		.DESCRIPTION
+			Sets the emulation of the WebBrowser control for the application using the installed version of IE.
+			This improves the WebBrowser control compatibility with newer html features.
+		
+		.PARAMETER ExecutableName
+			The name of the executable E.g. PowerShellStudio.exe.
+			Default Value: The running executable name.
+		
+		.EXAMPLE
+			PS C:\> Set-WebBrowserEmulation
+	
+		.EXAMPLE
+			PS C:\> Set-WebBrowserEmulation PowerShell.exe
+	#>
 	#Begin Region - Automatic System Information Gathering
 	$CurrentUserName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 	[string]$ComputerName = $env:computername
 	$Computer = $ComputerName
-	#Manufacturer information
-	$Manufacturer = Get-WmiObject win32_computersystem | Select Manufacturer
-	$Model = Get-WmiObject win32_computersystem | Select Model
-	#Gets the OS info
-	$GetOS = Get-WmiObject -class Win32_OperatingSystem -computername $Computer
-	$OS = $GetOS.Caption
-	$OSArchitecture = $GetOS.OSArchitecture
-	$OSBuildNumber = $GetOS.BuildNumber
-	#Monitor information
-	$MonitorCount = Get-ciminstance -namespace root/wmi -classname WmiMonitorConnectionParams | Select VideoOutputTechnology
-	#Gets memory information
-	$Getmemoryslot = Get-WmiObject Win32_PhysicalMemoryArray -ComputerName $computer
-	$Getmemory = Get-WMIObject Win32_PhysicalMemory -ComputerName $computer
-	$Getmemorymeasure = Get-WMIObject Win32_PhysicalMemory -ComputerName $computer | Measure-Object -Property Capacity -Sum
-	$MemorySlot = $Getmemoryslot.MemoryDevices
-	$MaxMemory = $($Getmemoryslot.MaxCapacity/1024/1024)
-	$TotalMemSticks = $Getmemorymeasure.count
-	$TotalMemSize = $($Getmemorymeasure.sum/1024/1024/1024)
-	#Get the disk info
-	$GetDiskInfo = Get-WmiObject Win32_logicaldisk -ComputerName $computer -Filter "DeviceID='C:'"
-	$DiskSize = $([math]::Round($GetDiskInfo.Size/1GB))
-	$FreeSpace = $([math]::Round($GetDiskInfo.FreeSpace/1GB))
-	$UsedSapce = $([math]::Round($DiskSize - $FreeSpace))
-	#Gets CPU info
-	$GetCPU = Get-wmiobject win32_processor -ComputerName $Computer
-	$CPUName = $GetCPU.Name
-	$CPUManufacturer = $GetCPU.Manufacturer
-	$CPUMaxClockSpeed = $GetCPU.MaxClockSpeed
-	#account status
 	$LoggedOnUser = (Get-WmiObject win32_computersystem -ComputerName $Computer).Username
-	$getLockedStart = If (Get-Process logonui -ComputerName $Computer -ErrorAction SilentlyContinue) { $Locked = "Yes" }
-	Else { $Locked = "No" }
-	#Serial Number
-	$SerialNumber = (Get-WmiObject win32_bios -ComputerName $Computer).SerialNumber
-	#get IP address
-	$IPAddress = (Get-WmiObject win32_NetworkadapterConfiguration -ComputerName $Computer | Where-Object IPAddress -ne $null).IPAddress
-	#Gets BIOS info
-	$BIOSName = (Get-WmiObject win32_bios -ComputerName $Computer).Name
-	$BIOSManufacturer = (Get-WmiObject win32_bios -ComputerName $Computer).Manufacturer
-	$BIOSVersionN = (Get-WmiObject win32_bios -ComputerName $Computer).Version
-	#Gets Motherboard info
-	$MotherBoardName = (Get-WmiObject Win32_BaseBoard -ComputerName $Computer).Name
-	$MotherBoardManufacturet = (Get-WmiObject Win32_BaseBoard -ComputerName $Computer).Manufacturer
-	$MotherBoardProduct = (Get-WmiObject Win32_BaseBoard -ComputerName $Computer).Product
-	$MotherBoardSerial = (Get-WmiObject Win32_BaseBoard -ComputerName $Computer).SerialNumber
+
 	$InstDate = (Get-CimInstance Win32_OperatingSystem).InstallDate
-	$DesktopPath = [Environment]::GetFolderPath("Desktop")
-	$MonitorC0unt = $MonitorCount -replace '@{VideoOutputTechnology=', ''
-	$MonitorCount = $MonitorC0unt -replace '}', ''
-	$M4nufacturer = $Manufacturer -replace '@{Manufacturer=', ''
-	$Manufacturer = $M4nufacturer -replace '}', ''
-	$M0del = $Model -replace '@{Model='
-	$Model = $M0del -replace '}'
-	$directories = Get-ChildItem -Path "C:\Users\" | Select -Property Name
-	$D1rectories = $directories -replace '{@{Name=', ''
-	$directories = $D1rectories -replace '}', ''
-	$M0therBoardSerial = $MotherBoardSerial -replace '/$SerialNumber/', ''
-	$MotherBoardSerial = $M0therBoardSerial -replace '/'
-	$TmpFile = [System.IO.Path]::GetTempFileName
-	$nl = [Environment]::NewLine
+
 	#End Region - Automatic System Information Gathering
-
-
+	
 	# Setting up Speech
 	# Need to load the System.Speech assembly
 	Add-Type -AssemblyName System.speech
@@ -142,10 +118,10 @@ function Show-profileBackup {
 	
 	# Setting voice
 	$speak.SelectVoice('Microsoft Zira Desktop')
-
-
-
-
+	
+	
+	
+	
 	function Get-Inventory
 	{
 		$InventoryScript = cmd /c "net use"
@@ -171,7 +147,14 @@ function Show-profileBackup {
 		$dest = $TextBox2.Text
 		If (Test-Path $source)
 		{
-			
+			If ($checkboxNewComputer.Checked)
+			{
+				cmd /c 'start "" "%ProgramFiles(x86)%\Microsoft Office\Office16\Outlook.exe"'
+				cmd /c 'start "" "%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe"'
+				cmd /c 'start "" "%ProgramFiles%\Mozilla Firefox\firefox.exe"'
+				cmd /c 'start control'
+				cmd /c 'start control /name Microsoft.DevicesAndPrinters'
+			}
 			If ($checkboxDesktop.Checked)
 			{
 				$ProgressBar1.Value = "15"
@@ -180,7 +163,7 @@ function Show-profileBackup {
 				Robocopy $source\Desktop $dest\Desktop *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				#$richtextbox1.Text = Robocopy $source\Desktop $dest\Desktop *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt | Out-String
 				$richtextbox1.Text += "`nDesktop directory backed up successfully."
-				$speak.Speak("The Desktop directory completed backing up. Continuing backup.")
+				$speak.Speak("The Desktop directory completed backing up. 30 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "30"
 			}
@@ -188,7 +171,7 @@ function Show-profileBackup {
 			{
 				Robocopy $source\Documents $dest\Documents *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nDocuments directory backed up successfully."
-				$speak.Speak("The Documents directory completed backing up. Continuing backup.")
+				$speak.Speak("The Documents directory completed backing up. 45 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "45"
 			}
@@ -196,17 +179,20 @@ function Show-profileBackup {
 			{
 				Robocopy $source\Downloads $dest\Downloads *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nDownloads directory backed up successfully."
-				$speak.Speak("The Downloads directory completed backing up. Continuing backup.")
+				$speak.Speak("The Downloads directory completed backing up. 57 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "57"
 			}
 			If ($checkboxBrowsers.Checked)
 			{
+				$richtextbox1.Text += "Initializing Browser data backup, please close the customer's browsers now."
 				Robocopy $source\Favorites $dest\Favorites *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+				$ProgressBar1.Value = "60"
 				Robocopy $source\AppData\Local\Google $dest\AppData\Local\Google *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+				$ProgressBar1.Value = "63"
 				Robocopy $source\AppData\Roaming\Mozilla\Firefox\Profiles $dest\AppData\Roaming\Mozilla\Firefox\Profiles *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nIE, FireFox, and Chrome Bookmark directories backed up successfully."
-				$speak.Speak("The Eye E, Fire Fox and Chrome Bookmarks directories completed backing up. Continuing backup.")
+				$speak.Speak("The Eye E, Fire Fox and Chrome Bookmarks directories completed backing up. 65 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "65"
 			}
@@ -214,7 +200,7 @@ function Show-profileBackup {
 			{
 				Robocopy $source\Pictures $dest\Pictures *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nPictures directory backed up successfully."
-				$speak.Speak("The Pictures directory completed backing up. Continuing backup.")
+				$speak.Speak("The Pictures directory completed backing up. 75 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "75"
 			}
@@ -222,7 +208,7 @@ function Show-profileBackup {
 			{
 				Robocopy $source\Videos $dest\Videos *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nVideos directory backed up successfully."
-				$speak.Speak("The Videos directory completed backing up. Continuing backup.")
+				$speak.Speak("The Videos directory completed backing up. 80 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "80"
 			}
@@ -230,7 +216,7 @@ function Show-profileBackup {
 			{
 				Robocopy "$source\application data\microsoft\templates" "$dest\application data\microsoft\templates" *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nQuickParts directory backed up successfully."
-				$speak.Speak("The Microsoft QuickParts completed backing up. Continuing backup.")
+				$speak.Speak("The Microsoft QuickParts completed backing up. 90 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "90"
 			}
@@ -239,25 +225,35 @@ function Show-profileBackup {
 				$source = $textbox7.Text
 				Robocopy $source $dest\Custom_Directory_Backup *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
 				$richtextbox1.Text += "`nCustom directory backed up successfully."
-				$speak.Speak("The custom backup directory completed backing up. Continuing backup.")
+				$speak.Speak("The custom backup directory completed backing up. 93 percent complete")
 				$richtextbox1.Text += "`n# # # # # # # # # #`n"
 				$ProgressBar1.Value = "93"
 			}
+			If ($checkboxOneDrive.Checked)
+			{
+				Robocopy $source\ODBA $dest\ODBA *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+				Robocopy $source\OneDrive - Embry-Riddle Aeronautical University $dest\OneDrive - Embry-Riddle Aeronautical University.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+				$richtextbox1.Text += "`OneDrive, and OneDrive-Not-Yet-Syncd-Files directory backed up successfully."
+				$speak.Speak("The OneDrive, and OneDrive-Not-Yet-Syncd-Files directories completed backing up. 96 percent complete")
+				$richtextbox1.Text += "`n# # # # # # # # # #`n"
+				$ProgressBar1.Value = "96"
+				
+			}
 			Robocopy $source\AppData\Roaming\Adobe\Acrobat\DC\Security $dest\AppData\Roaming\Adobe\Acrobat\DC\Security *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
-			$ProgressBar1.Value = "95"
+			$richtextbox1.Text += "`nAdobe signature file backed up successfully."
+			$speak.Speak("The Adobe signature file completed backing up.")
 			Robocopy $source\application data\microsoft\signatures $dest\application data\microsoft\signatures *.* /E /ZB /J /LOG+:$source\desktop\backuplog.txt
+			$richtextbox1.Text += "`nOutlook signature backed up successfully."
+			$speak.Speak("The Outlook signaturecompleted backing up. 98 percent complete")
 			$ProgressBar1.Value = "98"
-			$richtextbox1.Text += "`nBackup completed."
-			$ProgressBar1.Value = "100"			
-			$speak.Speak("All data that you selected to backup has successfully backed up. Please continue with your day in whatever manner that might mean.")
+			$ProgressBar1.Value = "100"
+			$speak.Speak("All selected directories completed backing up. Please continue with your day in whatever manner that might mean.")
 			$result = [System.Windows.Forms.MessageBox]::Show('This Operation Completed Successfully!', 'Warning', 'OK', 'Warning')
 			$result
-			
-			
-		}
+			}
 		Else
 		{
-			$speak.Speak("No joy. The directory you selected is not at that specific location. Please check and attempt again.")
+			$speak.Speak("No joy. I was unable to locate the directory you specified. Please check your path and try again.")
 			$result = [System.Windows.Forms.MessageBox]::Show('Unable to reach souce location!', 'Warning', 'YesNo', 'Warning')
 			$result
 		}
@@ -278,29 +274,23 @@ function Show-profileBackup {
 	}
 	
 	$buttonBackup_Click={
-		$speak.Speak("Initiating the backup. Please be patient this takes a while, maybe ask the customer about the weather?")
 		backupDirectory
 	}
 	
 	$buttonPrograms_Click={
-		$speak.Speak("Just a moment. I am collecting a list of all installed programs and will output for your immediate review.")
 		Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Out-GridView
 	}
 	
 	$buttonPrinters_Click={
-		$speak.Speak("Here is the printers that are installed on this computer.")
 		control printers
 	}
 	
 	$buttonInventory_Click={
-		$speak.Speak("Just a moment. I am creating and collecting logs for your immediate review.")
 		Get-Inventory
 	}
 	
-	$labelInstDate_Click={
-		#TODO: Place custom script here
-		
-	}
+	
+
 	
 	# --End User Generated Script--
 	#----------------------------------------------
@@ -318,7 +308,7 @@ function Show-profileBackup {
 		#Remove all event handlers from the controls
 		try
 		{
-			$labelInstDate.remove_Click($labelInstDate_Click)
+			$checkboxNewComputer.remove_CheckedChanged($checkboxNewComputer_CheckedChanged)
 			$buttonPrograms.remove_Click($buttonPrograms_Click)
 			$buttonInventory.remove_Click($buttonInventory_Click)
 			$buttonPrinters.remove_Click($buttonPrinters_Click)
@@ -336,16 +326,16 @@ function Show-profileBackup {
 	#region Generated Form Code
 	#----------------------------------------------
 	$formProfileBackup.SuspendLayout()
-	$groupbox2.SuspendLayout()
+	$Info.SuspendLayout()
 	$groupbox3.SuspendLayout()
+	$groupbox2.SuspendLayout()
 	#
 	# formProfileBackup
 	#
-	$formProfileBackup.Controls.Add($label1)
-	$formProfileBackup.Controls.Add($labelProfileBackup002)
-	$formProfileBackup.Controls.Add($labelInstDate)
-	$formProfileBackup.Controls.Add($labelenvUserName)
-	$formProfileBackup.Controls.Add($labelenvCOMPUTERNAME)
+	$formProfileBackup.Controls.Add($checkboxNewComputer)
+	$formProfileBackup.Controls.Add($labelCheckDirectoryYouWan)
+	$formProfileBackup.Controls.Add($Info)
+	$formProfileBackup.Controls.Add($labelProfileBackup005)
 	$formProfileBackup.Controls.Add($buttonPrograms)
 	$formProfileBackup.Controls.Add($buttonInventory)
 	$formProfileBackup.Controls.Add($buttonPrinters)
@@ -357,71 +347,144 @@ function Show-profileBackup {
 	$formProfileBackup.AutoScaleDimensions = '6, 13'
 	$formProfileBackup.AutoScaleMode = 'Font'
 	$formProfileBackup.ClientSize = '408, 461'
-	$System_Windows_Forms_MenuStrip_1 = New-Object 'System.Windows.Forms.MenuStrip'
-	$System_Windows_Forms_MenuStrip_1.Location = '0, 0'
-	$System_Windows_Forms_MenuStrip_1.Name = ''
-	$System_Windows_Forms_MenuStrip_1.Size = '632, 24'
-	$System_Windows_Forms_MenuStrip_1.TabIndex = 10
-	$System_Windows_Forms_MenuStrip_1.Visible = $False
-	$formProfileBackup.MainMenuStrip = $System_Windows_Forms_MenuStrip_1
+	#region Binary Data
+	
+	#endregion
 	$formProfileBackup.Name = 'formProfileBackup'
 	$formProfileBackup.Text = 'Profile Backup '
 	$formProfileBackup.add_Load($formProfileBackup_Load)
 	#
-	# label1
+	# checkboxNewComputer
 	#
-	$label1.AutoSize = $True
-	$label1.Location = '260, 43'
-	$label1.Name = 'label1'
-	$label1.Size = '112, 17'
-	$label1.TabIndex = 39
-	$label1.Text = "$env:ComputerName"
-	$label1.UseCompatibleTextRendering = $True
+	$checkboxNewComputer.Location = '276, 42'
+	$checkboxNewComputer.Name = 'checkboxNewComputer'
+	$checkboxNewComputer.Size = '116, 24'
+	$checkboxNewComputer.TabIndex = 38
+	$checkboxNewComputer.Text = 'New Computer?'
+	$checkboxNewComputer.UseCompatibleTextRendering = $True
+	$checkboxNewComputer.UseVisualStyleBackColor = $True
+	$checkboxNewComputer.add_CheckedChanged($checkboxNewComputer_CheckedChanged)
 	#
-	# labelProfileBackup002
+	# labelCheckDirectoryYouWan
 	#
-	$labelProfileBackup002.AutoSize = $True
-	$labelProfileBackup002.Location = '150, 9'
-	$labelProfileBackup002.Name = 'labelProfileBackup002'
-	$labelProfileBackup002.Size = '105, 17'
-	$labelProfileBackup002.TabIndex = 38
-	$labelProfileBackup002.Text = 'Profile Backup Voice'
-	$labelProfileBackup002.UseCompatibleTextRendering = $True
+	$labelCheckDirectoryYouWan.AutoSize = $True
+	$labelCheckDirectoryYouWan.Location = '270, 54'
+	$labelCheckDirectoryYouWan.Name = 'labelCheckDirectoryYouWan'
+	$labelCheckDirectoryYouWan.Size = '0, 16'
+	$labelCheckDirectoryYouWan.TabIndex = 46
+	$labelCheckDirectoryYouWan.UseCompatibleTextRendering = $True
 	#
-	# labelInstDate
+	# Info
 	#
-	$labelInstDate.AutoSize = $True
-	$labelInstDate.Location = '260, 94'
-	$labelInstDate.Name = 'labelInstDate'
-	$labelInstDate.Size = '53, 17'
-	$labelInstDate.TabIndex = 37
-	$labelInstDate.Text = "$InstDate"
-	$labelInstDate.UseCompatibleTextRendering = $True
-	$labelInstDate.add_Click($labelInstDate_Click)
+	$Info.Controls.Add($labelenvUserName)
+	$Info.Controls.Add($labelOSInstallDate)
+	$Info.Controls.Add($labelenvCOMPUTERNAME)
+	$Info.Controls.Add($labelAuthenticatedUser)
+	$Info.Controls.Add($labelInstDate)
+	$Info.Controls.Add($labelWindowsUser)
+	$Info.Controls.Add($label1)
+	$Info.Controls.Add($labelDeviceName)
+	$Info.Location = '9, 250'
+	$Info.Name = 'Info'
+	$Info.Size = '245, 100'
+	$Info.TabIndex = 44
+	$Info.TabStop = $False
+	$Info.Text = 'Information'
+	$Info.UseCompatibleTextRendering = $True
 	#
 	# labelenvUserName
 	#
 	$labelenvUserName.AutoSize = $True
-	$labelenvUserName.Location = '260, 77'
+	$labelenvUserName.Location = '119, 57'
 	$labelenvUserName.Name = 'labelenvUserName'
 	$labelenvUserName.Size = '86, 17'
 	$labelenvUserName.TabIndex = 36
 	$labelenvUserName.Text = "$env:UserName"
 	$labelenvUserName.UseCompatibleTextRendering = $True
 	#
+	# labelOSInstallDate
+	#
+	$labelOSInstallDate.AutoSize = $True
+	$labelOSInstallDate.Location = '30, 74'
+	$labelOSInstallDate.Name = 'labelOSInstallDate'
+	$labelOSInstallDate.Size = '83, 17'
+	$labelOSInstallDate.TabIndex = 43
+	$labelOSInstallDate.Text = 'OS Install Date:'
+	$labelOSInstallDate.UseCompatibleTextRendering = $True
+	#
 	# labelenvCOMPUTERNAME
 	#
 	$labelenvCOMPUTERNAME.AutoSize = $True
-	$labelenvCOMPUTERNAME.Location = '260, 60'
+	$labelenvCOMPUTERNAME.Location = '119, 40'
 	$labelenvCOMPUTERNAME.Name = 'labelenvCOMPUTERNAME'
 	$labelenvCOMPUTERNAME.Size = '87, 17'
 	$labelenvCOMPUTERNAME.TabIndex = 35
 	$labelenvCOMPUTERNAME.Text = "$LoggedOnUser"
 	$labelenvCOMPUTERNAME.UseCompatibleTextRendering = $True
 	#
+	# labelAuthenticatedUser
+	#
+	$labelAuthenticatedUser.AutoSize = $True
+	$labelAuthenticatedUser.Location = '9, 57'
+	$labelAuthenticatedUser.Name = 'labelAuthenticatedUser'
+	$labelAuthenticatedUser.Size = '104, 17'
+	$labelAuthenticatedUser.TabIndex = 42
+	$labelAuthenticatedUser.Text = 'Authenticated User:'
+	$labelAuthenticatedUser.UseCompatibleTextRendering = $True
+	#
+	# labelInstDate
+	#
+	$labelInstDate.AutoSize = $True
+	$labelInstDate.Location = '119, 74'
+	$labelInstDate.Name = 'labelInstDate'
+	$labelInstDate.Size = '53, 17'
+	$labelInstDate.TabIndex = 37
+	$labelInstDate.Text = "$InstDate"
+	$labelInstDate.UseCompatibleTextRendering = $True
+	#
+	# labelWindowsUser
+	#
+	$labelWindowsUser.AutoSize = $True
+	$labelWindowsUser.Location = '33, 40'
+	$labelWindowsUser.Name = 'labelWindowsUser'
+	$labelWindowsUser.Size = '80, 17'
+	$labelWindowsUser.TabIndex = 41
+	$labelWindowsUser.Text = 'Windows User:'
+	$labelWindowsUser.UseCompatibleTextRendering = $True
+	#
+	# label1
+	#
+	$label1.AutoSize = $True
+	$label1.Location = '119, 23'
+	$label1.Name = 'label1'
+	$label1.Size = '112, 17'
+	$label1.TabIndex = 39
+	$label1.Text = "$env:ComputerName"
+	$label1.UseCompatibleTextRendering = $True
+	#
+	# labelDeviceName
+	#
+	$labelDeviceName.AutoSize = $True
+	$labelDeviceName.Location = '39, 22'
+	$labelDeviceName.Name = 'labelDeviceName'
+	$labelDeviceName.Size = '75, 17'
+	$labelDeviceName.TabIndex = 40
+	$labelDeviceName.Text = 'Device Name:'
+	$labelDeviceName.UseCompatibleTextRendering = $True
+	#
+	# labelProfileBackup005
+	#
+	$labelProfileBackup005.AutoSize = $True
+	$labelProfileBackup005.Location = '150, 9'
+	$labelProfileBackup005.Name = 'labelProfileBackup005'
+	$labelProfileBackup005.Size = '105, 17'
+	$labelProfileBackup005.TabIndex = 38
+	$labelProfileBackup005.Text = 'Profile Backup 0.0.5'
+	$labelProfileBackup005.UseCompatibleTextRendering = $True
+	#
 	# buttonPrograms
 	#
-	$buttonPrograms.Location = '317, 211'
+	$buttonPrograms.Location = '317, 255'
 	$buttonPrograms.Name = 'buttonPrograms'
 	$buttonPrograms.Size = '75, 23'
 	$buttonPrograms.TabIndex = 34
@@ -432,7 +495,7 @@ function Show-profileBackup {
 	#
 	# buttonInventory
 	#
-	$buttonInventory.Location = '317, 269'
+	$buttonInventory.Location = '317, 301'
 	$buttonInventory.Name = 'buttonInventory'
 	$buttonInventory.Size = '75, 23'
 	$buttonInventory.TabIndex = 33
@@ -443,7 +506,7 @@ function Show-profileBackup {
 	#
 	# buttonPrinters
 	#
-	$buttonPrinters.Location = '317, 240'
+	$buttonPrinters.Location = '317, 278'
 	$buttonPrinters.Name = 'buttonPrinters'
 	$buttonPrinters.Size = '75, 23'
 	$buttonPrinters.TabIndex = 32
@@ -454,9 +517,9 @@ function Show-profileBackup {
 	#
 	# buttonBackup
 	#
-	$buttonBackup.Location = '317, 297'
+	$buttonBackup.Location = '317, 324'
 	$buttonBackup.Name = 'buttonBackup'
-	$buttonBackup.Size = '75, 52'
+	$buttonBackup.Size = '75, 25'
 	$buttonBackup.TabIndex = 31
 	$buttonBackup.Text = 'Backup'
 	$buttonBackup.UseCompatibleTextRendering = $True
@@ -472,6 +535,7 @@ function Show-profileBackup {
 	#
 	# groupbox3
 	#
+	$groupbox3.Controls.Add($checkboxOneDrive)
 	$groupbox3.Controls.Add($checkboxCustomDirectory)
 	$groupbox3.Controls.Add($textbox7)
 	$groupbox3.Controls.Add($checkboxQuickparts)
@@ -481,17 +545,27 @@ function Show-profileBackup {
 	$groupbox3.Controls.Add($checkboxDocuments)
 	$groupbox3.Controls.Add($checkboxDownloads)
 	$groupbox3.Controls.Add($checkboxDesktop)
-	$groupbox3.Location = '9, 129'
+	$groupbox3.Location = '9, 109'
 	$groupbox3.Name = 'groupbox3'
-	$groupbox3.Size = '245, 221'
+	$groupbox3.Size = '246, 134'
 	$groupbox3.TabIndex = 29
 	$groupbox3.TabStop = $False
 	$groupbox3.Text = 'Directories'
 	$groupbox3.UseCompatibleTextRendering = $True
 	#
+	# checkboxOneDrive
+	#
+	$checkboxOneDrive.Location = '134, 76'
+	$checkboxOneDrive.Name = 'checkboxOneDrive'
+	$checkboxOneDrive.Size = '104, 24'
+	$checkboxOneDrive.TabIndex = 37
+	$checkboxOneDrive.Text = 'OneDrive'
+	$checkboxOneDrive.UseCompatibleTextRendering = $True
+	$checkboxOneDrive.UseVisualStyleBackColor = $True
+	#
 	# checkboxCustomDirectory
 	#
-	$checkboxCustomDirectory.Location = '6, 187'
+	$checkboxCustomDirectory.Location = '6, 96'
 	$checkboxCustomDirectory.Name = 'checkboxCustomDirectory'
 	$checkboxCustomDirectory.Size = '122, 24'
 	$checkboxCustomDirectory.TabIndex = 36
@@ -501,14 +575,14 @@ function Show-profileBackup {
 	#
 	# textbox7
 	#
-	$textbox7.Location = '129, 189'
+	$textbox7.Location = '134, 100'
 	$textbox7.Name = 'textbox7'
 	$textbox7.Size = '100, 20'
 	$textbox7.TabIndex = 35
 	#
 	# checkboxQuickparts
 	#
-	$checkboxQuickparts.Location = '6, 163'
+	$checkboxQuickparts.Location = '6, 76'
 	$checkboxQuickparts.Name = 'checkboxQuickparts'
 	$checkboxQuickparts.Size = '109, 24'
 	$checkboxQuickparts.TabIndex = 34
@@ -518,7 +592,7 @@ function Show-profileBackup {
 	#
 	# checkboxBrowsers
 	#
-	$checkboxBrowsers.Location = '6, 139'
+	$checkboxBrowsers.Location = '134, 57'
 	$checkboxBrowsers.Name = 'checkboxBrowsers'
 	$checkboxBrowsers.Size = '104, 24'
 	$checkboxBrowsers.TabIndex = 33
@@ -528,7 +602,7 @@ function Show-profileBackup {
 	#
 	# checkboxVideos
 	#
-	$checkboxVideos.Location = '6, 115'
+	$checkboxVideos.Location = '6, 57'
 	$checkboxVideos.Name = 'checkboxVideos'
 	$checkboxVideos.Size = '104, 24'
 	$checkboxVideos.TabIndex = 32
@@ -538,7 +612,7 @@ function Show-profileBackup {
 	#
 	# checkboxPictures
 	#
-	$checkboxPictures.Location = '6, 91'
+	$checkboxPictures.Location = '134, 38'
 	$checkboxPictures.Name = 'checkboxPictures'
 	$checkboxPictures.Size = '104, 24'
 	$checkboxPictures.TabIndex = 31
@@ -548,7 +622,7 @@ function Show-profileBackup {
 	#
 	# checkboxDocuments
 	#
-	$checkboxDocuments.Location = '6, 43'
+	$checkboxDocuments.Location = '134, 20'
 	$checkboxDocuments.Name = 'checkboxDocuments'
 	$checkboxDocuments.Size = '104, 24'
 	$checkboxDocuments.TabIndex = 30
@@ -558,7 +632,7 @@ function Show-profileBackup {
 	#
 	# checkboxDownloads
 	#
-	$checkboxDownloads.Location = '6, 67'
+	$checkboxDownloads.Location = '6, 38'
 	$checkboxDownloads.Name = 'checkboxDownloads'
 	$checkboxDownloads.Size = '104, 24'
 	$checkboxDownloads.TabIndex = 29
@@ -585,7 +659,7 @@ function Show-profileBackup {
 	$groupbox2.Controls.Add($labelToLocation)
 	$groupbox2.Location = '9, 27'
 	$groupbox2.Name = 'groupbox2'
-	$groupbox2.Size = '245, 100'
+	$groupbox2.Size = '245, 76'
 	$groupbox2.TabIndex = 28
 	$groupbox2.TabStop = $False
 	$groupbox2.Text = 'Locations'
@@ -593,14 +667,14 @@ function Show-profileBackup {
 	#
 	# textbox1
 	#
-	$textbox1.Location = '101, 32'
+	$textbox1.Location = '102, 19'
 	$textbox1.Name = 'textbox1'
 	$textbox1.Size = '128, 20'
 	$textbox1.TabIndex = 1
 	#
 	# textbox2
 	#
-	$textbox2.Location = '101, 58'
+	$textbox2.Location = '102, 45'
 	$textbox2.Name = 'textbox2'
 	$textbox2.Size = '128, 20'
 	$textbox2.TabIndex = 2
@@ -608,7 +682,7 @@ function Show-profileBackup {
 	# labelFromLocation
 	#
 	$labelFromLocation.AutoSize = $True
-	$labelFromLocation.Location = '6, 35'
+	$labelFromLocation.Location = '7, 22'
 	$labelFromLocation.Name = 'labelFromLocation'
 	$labelFromLocation.Size = '77, 17'
 	$labelFromLocation.TabIndex = 11
@@ -618,7 +692,7 @@ function Show-profileBackup {
 	# labelToLocation
 	#
 	$labelToLocation.AutoSize = $True
-	$labelToLocation.Location = '6, 61'
+	$labelToLocation.Location = '7, 48'
 	$labelToLocation.Name = 'labelToLocation'
 	$labelToLocation.Size = '63, 17'
 	$labelToLocation.TabIndex = 12
@@ -627,17 +701,17 @@ function Show-profileBackup {
 	#
 	# richtextbox1
 	#
-	$richtextbox1.Location = '0, 356'
+	$richtextbox1.Location = '5, 356'
 	$richtextbox1.Name = 'richtextbox1'
-	$richtextbox1.Size = '409, 93'
+	$richtextbox1.Size = '400, 90'
 	$richtextbox1.TabIndex = 7
-	$richtextbox1.Text = 'Welcome to the Profile Backup Tool!'
-	$richtextbox1.Text += "`n`n"
-	$richtextbox1.Text += "`n# # # # # # # # # #`n"
+	$richtextbox1.Text = ''
+	#
 	# tooltip1
 	#
-	$groupbox3.ResumeLayout()
 	$groupbox2.ResumeLayout()
+	$groupbox3.ResumeLayout()
+	$Info.ResumeLayout()
 	$formProfileBackup.ResumeLayout()
 	#endregion Generated Form Code
 
@@ -655,4 +729,4 @@ function Show-profileBackup {
 } #End Function
 
 #Call the form
-Show-profileBackup | Out-Null
+Show-ProfileBackup | Out-Null
