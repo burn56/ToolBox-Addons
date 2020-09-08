@@ -17,7 +17,8 @@ O365-MFAConnect (MFA O365 Connection)
 WanIP (Get Current Machine's WAN IP)
 Run-AsAdmin (Open a New Powershell Window as Admin)
 Get-LatestCoreProfile (Update the Profile with the latest version)
-Remove-Profile (To erase this profile from this Machine)"
+Remove-Profile (To erase this profile from this Machine)
+Test"
 function CoreAuditLogCheck{
 $AuditLogsEnabled = Get-AdminAuditLogConfig
                     if($AuditLogsEnabled -eq $null){sleep 2; $AuditLogsEnabled = Get-AdminAuditLogConfig }
