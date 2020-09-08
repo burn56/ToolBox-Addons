@@ -1,4 +1,5 @@
-﻿Function wanip{function Write-ColorOutput
+Function wanip{
+function Write-ColorOutput
 {
     [CmdletBinding()]
     Param(
@@ -42,7 +43,26 @@
     # Restore previous colors
     $host.UI.RawUI.ForegroundColor = $previousForegroundColor
     $host.UI.RawUI.BackgroundColor = $previousBackgroundColor
-}#https://ipinfo.io/ Write-ColorOutput "WAN IP Information" Red$ipinfo = Invoke-RestMethod http://ipinfo.io/json $ipinfo.ip $ipinfo.hostname $ipinfo.city $ipinfo.region $ipinfo.country $ipinfo.org$ipinfo.name$ipinfo.loc} function O365-Connect { 
+}
+
+#https://ipinfo.io/ 
+Write-ColorOutput "WAN IP Information" Red
+
+$ipinfo = Invoke-RestMethod http://ipinfo.io/json 
+
+$ipinfo.ip 
+$ipinfo.hostname 
+$ipinfo.city 
+$ipinfo.region 
+$ipinfo.country 
+$ipinfo.org
+$ipinfo.name
+$ipinfo.loc
+
+
+
+} 
+function O365-Connect { 
 $UserCredential = Get-Credential
 $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
 Import-PSSession $Session -DisableNameChecking
@@ -81,7 +101,8 @@ $newProcess.Verb = "runas";
 #exit 
 } 
 
-}
+}
+
 function Remove-Profile {
 $Scope = "CurrentUserAllHosts"
 $profile_dir = Split-Path $PROFILE.$Scope
