@@ -1,6 +1,6 @@
 <#
 .Synopsis
-    Install the TsekNet PowerShell profile.
+    Install the Coretelligent PowerShell profile.
 
 .DESCRIPTION
     Install the Coretelligent PowerShell profile from GitHub for the desired scope.
