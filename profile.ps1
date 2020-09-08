@@ -13,10 +13,42 @@ Change Log
 V1.00, 09/08/20 - Initial version
 #>
 $Supported = "O365-Connect (Standard Office 365 Connection)
-Connect-EXOPSSession (MFA O365 Connection)
+O365-MFAConnect (MFA O365 Connection)
 WanIP (Get Current Machine's WAN IP)
 Run-AsAdmin (Open a New Powershell Window as Admin)
 Remove-Profile (To erase this profile from this Machine)"
+function CoreAuditLogCheck{
+$AuditLogsEnabled = Get-AdminAuditLogConfig
+                    if($AuditLogsEnabled -eq $null){sleep 2; $AuditLogsEnabled = Get-AdminAuditLogConfig }
+                    $AuditLogVerify = $AuditLogsEnabled.AdminAuditLogEnabled
+                    write-host "Found That Audit log enabled is set to:" -NoNewline
+                    
+                    if($AuditLogVerify -eq $true){write-host " $AuditLogVerify" -ForegroundColor Green}
+                    elseif($AuditLogVerify -eq $False)
+                        {
+                            write-host " $AuditLogVerify" -ForegroundColor Red
+                            write-host "O365 Audit Logs are detected as disabled Prompting for Enablement."
+                            $Pop = new-object -comobject wscript.shell
+		                    $AuditAnswer = $Pop.popup("Security Audit Logs are detected as not enabled.`nEnable Now?", `
+				                    0, "O365 Audit Log Status", 4)
+		                    
+		                    If ($AuditAnswer -eq 6)
+		                    {
+			                    Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true
+                                write-host "Audit Logs now enabled, it may take up to 60 minutes to take effect."
+		                    }
+                            else
+                            {
+                                write-host "User did not wish to enable O365 Audit Logs"
+                            }
+                        }
+}
+
+function O365-MFAConnect{
+Connect-EXOPSSession
+CoreAuditLogCheck
+}
+
 Function wanip{
 function Write-ColorOutput
 {
@@ -85,40 +117,40 @@ function O365-Connect {
 $UserCredential = Get-Credential
 $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
 Import-PSSession $Session -DisableNameChecking
-
+CoreAuditLogCheck
 }
 function Run-AsAdmin { 
-# Get the ID and security principal of the current user account 
-$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent() 
-$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID) 
+    # Get the ID and security principal of the current user account 
+    $myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent() 
+    $myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID) 
 
-# Get the security principal for the Administrator role 
-$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator 
+    # Get the security principal for the Administrator role 
+    $adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator 
 
-# Check to see if we are currently running "as Administrator" 
-if ($myWindowsPrincipal.IsInRole($adminRole)) 
-{ 
-# We are running "as Administrator" - so change the title and background color to indicate this 
-# $Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + "(Elevated)" 
-$Host.UI.RawUI.BackgroundColor = "DarkBlue" 
-clear-host 
-} 
-else 
-{ 
-# We are not running "as Administrator" - so relaunch as administrator 
+    # Check to see if we are currently running "as Administrator" 
+    if ($myWindowsPrincipal.IsInRole($adminRole)) 
+    { 
+        # We are running "as Administrator" - so change the title and background color to indicate this 
+        # $Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + "(Elevated)" 
+        $Host.UI.RawUI.BackgroundColor = "DarkBlue" 
+        clear-host 
+    } 
+    else 
+    { 
+        # We are not running "as Administrator" - so relaunch as administrator 
 
-# Create a new process object that starts PowerShell 
-$newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell"; 
+        # Create a new process object that starts PowerShell 
+        $newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell"; 
 
-# Indicate that the process should be elevated 
-$newProcess.Verb = "runas"; 
+        # Indicate that the process should be elevated 
+        $newProcess.Verb = "runas"; 
 
-# Start the new process 
-[System.Diagnostics.Process]::Start($newProcess); 
+        # Start the new process 
+        [System.Diagnostics.Process]::Start($newProcess); 
 
-# Exit from the current, unelevated, process 
-#exit 
-} 
+        # Exit from the current, unelevated, process 
+        #exit 
+    } 
 
 }
 
@@ -165,6 +197,6 @@ Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" -ForegroundColor Yellow
 Write-Host "Current Profile Supports: " -ForegroundColor DarkCyan
 write-host "$Supported  " -ForegroundColor Green
 Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"-ForegroundColor Yellow
-Write-host "Please use 'Remove-Profile' when done" -ForegroundColor Red
+Write-host "Please use 'Remove-Profile' to remove this profile from the machine" -ForegroundColor Red
 Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"-ForegroundColor Yellow
 
