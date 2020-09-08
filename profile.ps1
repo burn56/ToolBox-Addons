@@ -12,6 +12,11 @@ Written by: Matt Urbano
 Change Log
 V1.00, 09/08/20 - Initial version
 #>
+ Param
+ (
+    [Parameter(Mandatory = $false)]
+    [switch]$reload
+    )
 $Supported = "O365-Connect (Standard Office 365 Connection)
 O365-MFAConnect (MFA O365 Connection)
 WanIP (Get Current Machine's WAN IP)
@@ -188,8 +193,12 @@ if(-not(test-path $module_dir))
         $request = Invoke-WebRequest $URL -OutFile "$module_dir\ConnectEXO.zip"
         Expand-Archive -Path "$module_dir\ConnectEXO.zip" -DestinationPath "$module_dir"
         Remove-Item "$module_dir\ConnectEXO.zip" -Force
-        Start-Process "Powershell.exe"
-        exit
+        if($reload -eq $true){. $profile}
+        else{
+           $newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell"; 
+           [System.Diagnostics.Process]::Start($newProcess); 
+           exit}
+    
         
     }
 Get-ChildItem "${module_dir}\*.ps1" -Recurse | %{.$_} 
