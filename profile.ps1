@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+Profile.ps1
+.DESCRIPTION
+This is the custom Profile loader to load this profile onto any machine
+.OUTPUTS
+Profile will go into the current users' documents folder
+
+.NOTES
+Written by: Matt Urbano
+
+Change Log
+V1.00, 09/08/20 - Initial version
+#>
+$Supported = "O365-Connect (Standard Office 365 Connection)
+Connect-EXOPSSession (MFA O365 Connection)
+WanIP (Get Current Machine's WAN IP)
+Run-AsAdmin (Open a New Powershell Window as Admin)
+Remove-Profile (To erase this profile from this Machine)"
 Function wanip{
 function Write-ColorOutput
 {
@@ -112,6 +131,12 @@ if((Test-Path $profile_file) -eq $true)
     {
         Remove-Item $profile_file -Force
         Remove-item $module_dir -Recurse -Force -ErrorAction SilentlyContinue
+        if(test-path c:\temp\ExecutionPolicyOld.txt)
+        {
+            $OldPolicyRestore = gc c:\temp\ExecutionPolicyOld.txt
+            Set-ExecutionPolicy $OldPolicyRestore -force
+            Remove-Item c:\temp\ExecutionPolicyOld.txt
+        }
     }
 
 
@@ -136,6 +161,7 @@ Get-ChildItem "${module_dir}\*.ps1" | %{.$_}
 }
 Download-Unpack-Modules
 Write-Host "Coretelligent Powershell Profile Loaded"
+Write-Host "Current Profile Supports: $Supported  "
 Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 Write-host "Please use 'Remove-Profile' when done"
 Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
