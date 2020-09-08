@@ -44,10 +44,7 @@ $AuditLogsEnabled = Get-AdminAuditLogConfig
                         }
 }
 
-function O365-MFAConnect{
-Connect-EXOPSSession
-CoreAuditLogCheck
-}
+
 
 Function wanip{
 function Write-ColorOutput
@@ -190,9 +187,22 @@ if(-not(test-path $module_dir))
         
     }
 Get-ChildItem "${module_dir}\*.ps1" -Recurse | %{.$_} 
+import-module "$module_dir\CreateExoPSSession\CreateExoPSSession.ps1"
 clear
 }
 Download-Unpack-Modules
+function O365-MFAConnect{
+$Scope = "CurrentUserAllHosts"
+$profile_dir = Split-Path $PROFILE.$Scope
+$module_dir = "$profile_dir\Modules"
+Import-Module $((Get-ChildItem -Path $($module_dir+"\CreateExoPSSession") -Filter Microsoft.Exchange.Management.ExoPowershellModule.dll -Recurse ).FullName|?{$_ -notmatch "_none_"}|select -First 1)
+
+try{ $EXOSession = New-ExoPSSession -ErrorAction stop
+Import-PSSession $EXOSession -ErrorAction stop
+CoreAuditLogCheck}
+catch{
+Write-Host "Connection was aborted" -ForegroundColor Red}
+}
 Write-Host "Coretelligent Powershell Profile Loaded"
 Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" -ForegroundColor Yellow    
 Write-Host "Current Profile Supports: " -ForegroundColor DarkCyan
