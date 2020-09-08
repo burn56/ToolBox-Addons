@@ -189,7 +189,8 @@ if(-not(test-path $module_dir))
         exit
         
     }
-Get-ChildItem "${module_dir}\*.ps1" | %{.$_} 
+Get-ChildItem "${module_dir}\*.ps1" -Recurse | %{.$_} 
+clear
 }
 Download-Unpack-Modules
 Write-Host "Coretelligent Powershell Profile Loaded"
