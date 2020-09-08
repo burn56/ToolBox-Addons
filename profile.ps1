@@ -128,6 +128,8 @@ if(-not(test-path $module_dir))
         $request = Invoke-WebRequest $URL -OutFile "$module_dir\ConnectEXO.zip"
         Expand-Archive -Path "$module_dir\ConnectEXO.zip" -DestinationPath "$module_dir"
         Remove-Item "$module_dir\ConnectEXO.zip" -Force
+        Start-Process "Powershell.exe"
+        exit
         
     }
 Get-ChildItem "${module_dir}\*.ps1" | %{.$_} 
@@ -136,3 +138,5 @@ Download-Unpack-Modules
 Write-Host "Coretelligent Powershell Profile Loaded"
 Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 Write-host "Please use 'Remove-Profile' when done"
+Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
