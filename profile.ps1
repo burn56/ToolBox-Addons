@@ -161,8 +161,9 @@ Get-ChildItem "${module_dir}\*.ps1" | %{.$_}
 }
 Download-Unpack-Modules
 Write-Host "Coretelligent Powershell Profile Loaded"
-Write-Host "Current Profile Supports: $Supported  "
-Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-Write-host "Please use 'Remove-Profile' when done"
-Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" -ForegroundColor Yellow    
+Write-Host "Current Profile Supports: $Supported  " -ForegroundColor Green
+Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"-ForegroundColor Yellow
+Write-host "Please use 'Remove-Profile' when done" -ForegroundColor Red
+Write-host "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"-ForegroundColor Yellow
 
