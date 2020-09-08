@@ -16,6 +16,7 @@ $Supported = "O365-Connect (Standard Office 365 Connection)
 O365-MFAConnect (MFA O365 Connection)
 WanIP (Get Current Machine's WAN IP)
 Run-AsAdmin (Open a New Powershell Window as Admin)
+Get-LatestCoreProfile (Update the Profile with the latest version)
 Remove-Profile (To erase this profile from this Machine)"
 function CoreAuditLogCheck{
 $AuditLogsEnabled = Get-AdminAuditLogConfig
@@ -44,7 +45,9 @@ $AuditLogsEnabled = Get-AdminAuditLogConfig
                         }
 }
 
-
+function Get-LatestCoreProfile{
+    iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/burn56/ToolBox-Addons/master/installprofile.ps1')) 
+}
 
 Function wanip{
 function Write-ColorOutput
